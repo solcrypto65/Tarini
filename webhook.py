@@ -5,17 +5,13 @@ import json
 
 app = Flask(__name__)
 
-@app.route("/")
-def hello_world():
-
-
 @app.route('/webhook', methods=['POST'])
 def get_webhook():
 
     req = request.get_json(silent=True, force=True)
 
     def fetchIntentData(intent: str, parm: str):
-    
+
         if intent == 'faq':
             df = pd.read_csv('faq.csv')
             return df.to_dict()

@@ -6,6 +6,7 @@ import pandas as pd
 import requests
 import json
 import re
+from dotenv import load_dotenv
 
 messages = [
 	{'role' : 'system', 'content' : 'You are an AI enabled Agent for an eRetailer SuperMart who specializing in mobile sales.'}
@@ -51,9 +52,10 @@ def gptResponse(prompt: str):
 		messages.append({'role' : 'system', 'content' : sys_prompt})
 
 	if 'product' or 'mobile' or 'cellphone' in prompt:
-		match_obj = re.search(r"\bproduct\s+(.*)$", prompt)
+		match_obj = re.search(r"(?<=product).*", prompt)
+		print(match_obj.group().strip())
 		if match_obj:
-			sys_prompt = get_product_details(match_obj.group())
+			sys_prompt = get_product_details(match_obj.group().strip())
 		else:
 			sys_prompt = 'plese inform user that this product is not in stock'
 		messages.append({'role' : 'system', 'content' : sys_prompt})
@@ -72,7 +74,7 @@ def gptResponse(prompt: str):
 
 def main():
 	
-	OpenAI.api_key  = 'API-KEY'
+	OpenAI.api_key = os.getenv('OPENAI-API-KEY')
 
 	with gr.Blocks(css=css) as demo:
 		gr.Markdown(
